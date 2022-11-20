@@ -46,7 +46,7 @@ public class UsuarioFinal extends Usuario{
 
 	public void pegarFigu(Figurita f) throws YaFuePegada, NoSeEncontroLaFiguritaEnElStock {
 		if(figuritiasEnElStock.contains(f)) {
-			if(albumDeFiguritas.contains(f) && f.getEstado() == Estado.pegada) {
+			if(albumDeFiguritas.contains(f) || f.getEstado() == Estado.pegada) {
 				throw new YaFuePegada("Figurita ya pegada en el album");
 			}else {
 				this.albumDeFiguritas.add(f);

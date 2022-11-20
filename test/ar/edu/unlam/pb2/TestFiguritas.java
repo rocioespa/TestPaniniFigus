@@ -66,47 +66,56 @@ public class TestFiguritas {
 	
 	@Test
 	public void queUnUsuarioFinalSiPuedaAgregarFiguritasExistentes() throws NoSePudoAgregarException {
-		UsuarioFinal uf = new UsuarioFinal(2);
+		Administrador ad = new Administrador(1);
 		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.pegada);
-	    uf.agregarFigurita(f);
-	    uf.agregarFigurita(f);
+	    ad.agregarFigurita(f);
+		UsuarioFinal uf = new UsuarioFinal(2);
+		Set<Figurita> figuritas = ad.getFiguritaParaComercializar();
+		uf.figuritsValida(figuritas,f);
+		uf.figuritsValida(figuritas,f);
         assertEquals(2, uf.getFiguritiasEnElStock().size());
 	}
 	
 	@Test
-	public void queUnUsuarioFinalPuedaPegarUnaFigurita() throws YaFuePegada, NoSeEncontroLaFiguritaEnElStock {
-		
-		UsuarioFinal uf = new UsuarioFinal(2);
-		
+	public void queUnUsuarioFinalPuedaPegarUnaFigurita() throws YaFuePegada, NoSeEncontroLaFiguritaEnElStock, NoSePudoAgregarException {
+		Administrador ad = new Administrador(1);
 		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.sinPegar);
-		uf.agregarFigurita(f);
+	    ad.agregarFigurita(f);
+	    
+		UsuarioFinal uf = new UsuarioFinal(2);
+		Set<Figurita> figuritas = ad.getFiguritaParaComercializar();
+		uf.figuritsValida(figuritas,f);
 		uf.pegarFigu(f);
 	}
 	
 	
 	@Test(expected = YaFuePegada.class)
-	public void queUnUsuarioFinalNoPuedaPegarUnaFiguritaRepetida() throws YaFuePegada {
-		UsuarioFinal uf = new UsuarioFinal(2);
+	public void queUnUsuarioFinalNoPuedaPegarUnaFiguritaRepetida() throws YaFuePegada, NoSeEncontroLaFiguritaEnElStock, NoSePudoAgregarException {
+		Administrador ad = new Administrador(1);
 		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.pegada);
-		Figurita f1 = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.pegada);
-		uf.pegarFigu(1, f);
-		uf.pegarFigu(1, f1);
+	    ad.agregarFigurita(f);
+	    
+		UsuarioFinal uf = new UsuarioFinal(2);
+		Set<Figurita> figuritas = ad.getFiguritaParaComercializar();
+		uf.figuritsValida(figuritas,f);
+		uf.pegarFigu(f);
+		uf.pegarFigu(f);
 	}
 	
-//	@Test 
-//	public void queLasFiguritasAgregadasDeFormaDesordenadaQuedenOrdenadas() throws NoSePudoAgregarException {
-//		Administrador ad = new Administrador(1);
-//		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0);
-//		Figurita f1 = new Figurita(12,TipoGrupo.H,"Ecuador","Alfha",20000.0);
-//		Figurita f2 = new Figurita(13,TipoGrupo.C,"Senegal","Alfha",20000.0);
-//		Figurita f3 = new Figurita(14,TipoGrupo.D,"Paises Bajos","Alfha",20000.0);
-//		
-//	    ad.agregarFigurita(f2);
-//	    ad.agregarFigurita(f);
-//	    ad.agregarFigurita(f3);
-//	    ad.agregarFigurita(f1);
-//	    System.out.println(ad.getFigus().toString());
-//	}
+	@Test 
+	public void queLasFiguritasAgregadasDeFormaDesordenadaQuedenOrdenadas() throws NoSePudoAgregarException  {
+		Administrador ad = new Administrador(1);
+		Figurita f = new Figurita(11,TipoGrupo.A,"Inglaterra", "Harry Kane",20000.0,Estado.sinPegar);
+		Figurita f1 = new Figurita(12,TipoGrupo.H, "Paises Bajos", "Virgil van Dijk",20000.0,Estado.sinPegar);
+		Figurita f2 = new Figurita(13,TipoGrupo.C,"Ecuador", "Caicedo",20000.0,Estado.sinPegar);
+		Figurita f3 = new Figurita(14,TipoGrupo.C,"Ecuador", "Reasco",20000.0,Estado.sinPegar);
+		
+	    ad.agregarFigurita(f2);
+	    ad.agregarFigurita(f);
+	    ad.agregarFigurita(f3);
+	    ad.agregarFigurita(f1);
+	    System.out.println(ad.getFiguritaParaComercializar().toString());
+	}
 	
 //	@Test 
 //	public void queSePuedaRealizarElIntercambioDeFiguritasEntreDosUsuariosFinales() throws YaFuePegada {

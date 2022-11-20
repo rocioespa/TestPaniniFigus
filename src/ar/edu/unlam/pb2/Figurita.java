@@ -83,6 +83,14 @@ public class Figurita implements Comparable <Figurita>{
 				&& Objects.equals(nombreJugador, other.nombreJugador) && Objects.equals(seleccion, other.seleccion)
 				&& Objects.equals(valorJugador, other.valorJugador);
 	}
+	
+	@Override
+	public String toString() {
+		return "Figurita\n\n"
+				+ "\ncod_figu=" + cod_figu + "\ngrupo=" + grupo + "\nseleccion=" + seleccion + "\nnombreJugador="
+				+ nombreJugador + "\nvalorJugador=" + valorJugador + "\nestado=" + estado + "\n";
+	}
+
 
 	@Override
 	public int compareTo(Figurita o) {
