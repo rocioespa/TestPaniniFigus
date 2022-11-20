@@ -44,30 +44,51 @@ public class UsuarioFinal extends Usuario{
 		this.albumDeFiguritas = albumDeFiguritas;
 	}
 
-	public void pegarFigu(Figurita f) throws YaFuePegada, NoSeEncontroLaFiguritaEnElStock {
-		if(figuritiasEnElStock.contains(f)) {
+	public void pegarFigu(Figurita f) throws YaFuePegada, NoSeEncontroLaFigurita {
+		if(buscarFiguritaEnElStock(f)) {
 			if(albumDeFiguritas.contains(f) || f.getEstado() == Estado.pegada) {
 				throw new YaFuePegada("Figurita ya pegada en el album");
 			}else {
 				this.albumDeFiguritas.add(f);
 				f.setEstado(Estado.pegada);
-				figuritiasEnElStock.remove(f);
+				sacarFigurita(f); //pego la figurita y la saco de la lista
 			}
 			
-		} else{
-			throw new NoSeEncontroLaFiguritaEnElStock();
+		} 
+		
+	}
+	
+	
+	public Boolean buscarFiguritaEnElStock(Figurita f) throws NoSeEncontroLaFigurita {
+		if(figuritiasEnElStock.contains(f)) {
+			return true;
 		}
+		throw new NoSeEncontroLaFigurita("El usuario no contiene esta figurita en su stock");
+	}
+	
+	
+	public Boolean buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(Set<Figurita> figuritaParaComercializar, Figurita f) throws NoSePudoAgregarException {
+		if(figuritaParaComercializar.contains(f)) {
+			agregarFigurita(f);
+			return true;
+		}
+		throw new NoSePudoAgregarException("El administrador no dio de alta la figurita");
+	
 		
 	}
 
-	public void figuritsValida(Set<Figurita> figuritas, Figurita f) throws NoSePudoAgregarException {
-		for (Figurita figurita : figuritas) {
-			if(figurita.getCod_figu().equals(f.getCod_figu())) {
-				agregarFigurita(f);
-				break;
+	public void cambiarFiguritaConOtroUsuarioFinal(UsuarioFinal uf, UsuarioFinal uf2, Figurita figuUsuario1, Figurita figuUsuario2) throws NoSeEncontroLaFigurita, YaFuePegada {
+		if(uf.buscarFiguritaEnElStock(figuUsuario1) && uf2.buscarFiguritaEnElStock(figuUsuario2)) {
+			if(figuUsuario1.getEstado() == Estado.sinPegar && figuUsuario2.getEstado() == Estado.sinPegar) {
+				uf.sacarFigurita(figuUsuario1);
+				uf.agregarFigurita(figuUsuario2);
+				uf2.sacarFigurita(figuUsuario2);
+				uf2.agregarFigurita(figuUsuario1);
+			}else {
+				throw new YaFuePegada("Esta figurita ya esta pegada en el album, no se puede cambiar");
 			}
-			throw new NoSePudoAgregarException("El administrador no dio de alta la figurita");
-		} 
+			
+		}
 		
 	}
 

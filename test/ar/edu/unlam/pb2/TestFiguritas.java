@@ -46,11 +46,15 @@ public class TestFiguritas {
 	public void queUnUsuarioFinalPuedaAgregarUnaFigurita() throws NoSePudoAgregarException{
 		Administrador ad = new Administrador(1);
 		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.pegada);
+		Figurita f1 = new Figurita(12,TipoGrupo.B,"Argentina","Messi",20000.0,Estado.sinPegar);
 	    ad.agregarFigurita(f);
+	    ad.agregarFigurita(f1);
 		UsuarioFinal uf = new UsuarioFinal(2);
-		Set<Figurita> figuritas = ad.getFiguritaParaComercializar();
-		uf.figuritsValida(figuritas,f);
-	    assertEquals(1, uf.getFiguritiasEnElStock().size());
+		
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f1);
+		
+	    assertEquals(2, uf.getFiguritiasEnElStock().size());
 	    System.out.println(uf.getFiguritiasEnElStock().toString());
 	}
 	
@@ -70,36 +74,41 @@ public class TestFiguritas {
 		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.pegada);
 	    ad.agregarFigurita(f);
 		UsuarioFinal uf = new UsuarioFinal(2);
-		Set<Figurita> figuritas = ad.getFiguritaParaComercializar();
-		uf.figuritsValida(figuritas,f);
-		uf.figuritsValida(figuritas,f);
+		
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f);
         assertEquals(2, uf.getFiguritiasEnElStock().size());
 	}
 	
-	@Test
-	public void queUnUsuarioFinalPuedaPegarUnaFigurita() throws YaFuePegada, NoSeEncontroLaFiguritaEnElStock, NoSePudoAgregarException {
+	@Test 
+	public void queUnUsuarioFinalPuedaPegarUnaFigurita() throws YaFuePegada, NoSeEncontroLaFigurita, NoSePudoAgregarException {
 		Administrador ad = new Administrador(1);
 		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.sinPegar);
+		
 	    ad.agregarFigurita(f);
 	    
+	    
 		UsuarioFinal uf = new UsuarioFinal(2);
-		Set<Figurita> figuritas = ad.getFiguritaParaComercializar();
-		uf.figuritsValida(figuritas,f);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f);
 		uf.pegarFigu(f);
+		assertEquals(1,uf.getAlbumDeFiguritas().size());
 	}
 	
 	
 	@Test(expected = YaFuePegada.class)
-	public void queUnUsuarioFinalNoPuedaPegarUnaFiguritaRepetida() throws YaFuePegada, NoSeEncontroLaFiguritaEnElStock, NoSePudoAgregarException {
+	public void queUnUsuarioFinalNoPuedaPegarUnaFiguritaRepetida() throws YaFuePegada, NoSeEncontroLaFigurita, NoSePudoAgregarException {
 		Administrador ad = new Administrador(1);
-		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.pegada);
+		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.sinPegar);
+		
 	    ad.agregarFigurita(f);
 	    
+	    
 		UsuarioFinal uf = new UsuarioFinal(2);
-		Set<Figurita> figuritas = ad.getFiguritaParaComercializar();
-		uf.figuritsValida(figuritas,f);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f);
 		uf.pegarFigu(f);
 		uf.pegarFigu(f);
+		assertEquals(1,uf.getAlbumDeFiguritas().size());
 	}
 	
 	@Test 
@@ -117,19 +126,92 @@ public class TestFiguritas {
 	    System.out.println(ad.getFiguritaParaComercializar().toString());
 	}
 	
-//	@Test 
-//	public void queSePuedaRealizarElIntercambioDeFiguritasEntreDosUsuariosFinales() throws YaFuePegada {
-//		UsuarioFinal uf = new UsuarioFinal(2);
-//		UsuarioFinal uf1 = new UsuarioFinal(1);
-//		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0);
-//		Figurita f1 = new Figurita(12,TipoGrupo.B,"Ecuador","Alfha",20000.0);
-//		uf.agregarFigurita(f1);
-//		uf1.agregarFigurita(f);
-//		uf.cambioDeFigus(uf, uf1);
-//		System.out.println(uf.getStock().toString());
-//		System.out.println(uf1.getStock().toString());
-//	}
+	@Test
+	public void queSePuedaRealizarElIntercambioDeFiguritasEntreDosUsuariosFinales() throws NoSePudoAgregarException, NoSeEncontroLaFigurita, YaFuePegada {
+		Administrador ad = new Administrador(1);
+		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.sinPegar);
+		Figurita f1 = new Figurita(12,TipoGrupo.H, "Paises Bajos", "Virgil van Dijk",20000.0,Estado.sinPegar);
+		Figurita f2 = new Figurita(13,TipoGrupo.C,"Ecuador", "Caicedo",20000.0,Estado.sinPegar);
+		Figurita f3 = new Figurita(14,TipoGrupo.C,"Ecuador", "Reasco",20000.0,Estado.sinPegar);
+		Figurita f4 = new Figurita(15,TipoGrupo.D,"Argentina", "Messi",20000.0,Estado.sinPegar);
+		 ad.agregarFigurita(f);
+		 ad.agregarFigurita(f1);
+		 ad.agregarFigurita(f2);
+		 ad.agregarFigurita(f3);
+		 ad.agregarFigurita(f4);
+		// System.out.println(ad.getFiguritaParaComercializar().toString());
+		UsuarioFinal uf = new UsuarioFinal(2);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f1);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f2);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f3);
+		System.out.println("Usuario 1: "+uf.getFiguritiasEnElStock().toString());
+		
+		UsuarioFinal uf2 = new UsuarioFinal(3);
+		uf2.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f4);
+		System.out.println("Usuario 2: "+uf2.getFiguritiasEnElStock().toString());
+		uf.cambiarFiguritaConOtroUsuarioFinal(uf, uf2, f,f4);
+		System.out.println("Usuario 1: "+uf.getFiguritiasEnElStock().toString());
+		System.out.println("Usuario 2: "+uf2.getFiguritiasEnElStock().toString());
+		
+	}
 	
+	@Test (expected = NoSeEncontroLaFigurita.class)
+	public void queNoSePuedaIntercambiarUnaFiguritaDeUnUsuarioQueNoLaTenga()  throws NoSePudoAgregarException, NoSeEncontroLaFigurita, YaFuePegada {
+		Administrador ad = new Administrador(1);
+		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.sinPegar);
+		Figurita f1 = new Figurita(12,TipoGrupo.H, "Paises Bajos", "Virgil van Dijk",20000.0,Estado.sinPegar);
+		Figurita f2 = new Figurita(13,TipoGrupo.C,"Ecuador", "Caicedo",20000.0,Estado.sinPegar);
+		Figurita f3 = new Figurita(14,TipoGrupo.C,"Ecuador", "Reasco",20000.0,Estado.sinPegar);
+		Figurita f4 = new Figurita(15,TipoGrupo.D,"Argentina", "Messi",20000.0,Estado.sinPegar);
+		 ad.agregarFigurita(f);
+		 ad.agregarFigurita(f1);
+		 ad.agregarFigurita(f2);
+		 ad.agregarFigurita(f3);
+		 ad.agregarFigurita(f4);
+		// System.out.println(ad.getFiguritaParaComercializar().toString());
+		UsuarioFinal uf = new UsuarioFinal(2);
+		
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f1);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f2);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f3);
+		//System.out.println("Usuario 1: "+uf.getFiguritiasEnElStock().toString());
+		
+		UsuarioFinal uf2 = new UsuarioFinal(3);
+		uf2.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f4);
+		//System.out.println("Usuario 2: "+uf2.getFiguritiasEnElStock().toString());
+		uf.cambiarFiguritaConOtroUsuarioFinal(uf, uf2, f,f4);
+		//System.out.println("Usuario 1: "+uf.getFiguritiasEnElStock().toString());
+		//System.out.println("Usuario 2: "+uf2.getFiguritiasEnElStock().toString());
+	}
 	
+	@Test (expected = YaFuePegada.class)
+	public void queNoSePuedaIntercambiarUnaFiguritaDeUnUsuarioQueYaLaHayaPegado()  throws NoSePudoAgregarException, NoSeEncontroLaFigurita, YaFuePegada {
+		Administrador ad = new Administrador(1);
+		Figurita f = new Figurita(11,TipoGrupo.A,"Qatar","Alfha",20000.0,Estado.pegada);
+		Figurita f1 = new Figurita(12,TipoGrupo.H, "Paises Bajos", "Virgil van Dijk",20000.0,Estado.sinPegar);
+		Figurita f2 = new Figurita(13,TipoGrupo.C,"Ecuador", "Caicedo",20000.0,Estado.sinPegar);
+		Figurita f3 = new Figurita(14,TipoGrupo.C,"Ecuador", "Reasco",20000.0,Estado.sinPegar);
+		Figurita f4 = new Figurita(15,TipoGrupo.D,"Argentina", "Messi",20000.0,Estado.sinPegar);
+		 ad.agregarFigurita(f);
+		 ad.agregarFigurita(f1);
+		 ad.agregarFigurita(f2);
+		 ad.agregarFigurita(f3);
+		 ad.agregarFigurita(f4);
+		// System.out.println(ad.getFiguritaParaComercializar().toString());
+		UsuarioFinal uf = new UsuarioFinal(2);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f1);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f2);
+		uf.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f3);
+		//System.out.println("Usuario 1: "+uf.getFiguritiasEnElStock().toString());
+		
+		UsuarioFinal uf2 = new UsuarioFinal(3);
+		uf2.buscarsiElAdministradorCreoLaFiguritaYAgregarFigu(ad.getFiguritaParaComercializar(), f4);
+		//System.out.println("Usuario 2: "+uf2.getFiguritiasEnElStock().toString());
+		uf.cambiarFiguritaConOtroUsuarioFinal(uf, uf2, f,f4);
+		//System.out.println("Usuario 1: "+uf.getFiguritiasEnElStock().toString());
+		//System.out.println("Usuario 2: "+uf2.getFiguritiasEnElStock().toString());
+	}
 
 }
